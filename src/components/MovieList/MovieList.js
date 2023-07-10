@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect, useCallback } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import useHttp from '../../hooks/useHttp';
 
 import classes from './MovieList.module.css';
@@ -14,7 +14,7 @@ const MovieList = ({ id, selectedCategory, handleClick, searchTerm }) => {
   const url = `${options[`fetch${category}`]}${
     category === 'Search' ? searchTerm : ''
   }`;
-  const { isLoading, error, sendRequest } = useHttp();
+  const { sendRequest } = useHttp();
 
   useEffect(() => {
     // Fetch dữ liệu từ url xong setMovies để đưa vào component
@@ -28,7 +28,7 @@ const MovieList = ({ id, selectedCategory, handleClick, searchTerm }) => {
       });
     };
     sendRequest(url, getMoviesList);
-  }, [url]);
+  }, [url, sendRequest]);
   // Category là NetflixOriginals hay Search thì sẽ render Img dựa trên poster_path
   // Category là NetflixOriginals thì chỉ render ra 10 movie
   // Truyên handleClick và bind movie + listId
@@ -48,6 +48,7 @@ const MovieList = ({ id, selectedCategory, handleClick, searchTerm }) => {
                 />
               );
             }
+            return null;
           })}
         </div>
       </>

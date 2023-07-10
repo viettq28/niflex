@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import useHttp from '../../hooks/useHttp';
 
 import YouTube from 'react-youtube';
@@ -16,16 +16,18 @@ const MovieDetail = (props) => {
     overview,
     apiKey,
   } = props;
-  const opts = {
-    height: '400',
-    width: '100%',
-    playerVars: {
-      autoplay: 0,
-    },
-  };
+  const opts = useMemo(() => {
+    return {
+      height: '400',
+      width: '100%',
+      playerVars: {
+        autoplay: 0,
+      },
+    };
+  }, []);
   // State media chứa video miêu tả nêu có, không thì backdrop_path Img của Movie
   const [media, setMedia] = useState(null);
-  const { isLoading, error, sendRequest } = useHttp();
+  const { error, sendRequest } = useHttp();
   const url = `https://api.themoviedb.org/3/movie/${id}/videos?api_key=${apiKey}`;
 
   useEffect(() => {
@@ -50,6 +52,7 @@ const MovieDetail = (props) => {
         properMedia.sort((a) => {
           if (a.type === 'Trailer') return -1;
           if (a.type === 'Teaser') return 1;
+          return null;
         });
         // Truyền videoId từ key của properMedia ở vị trí đầu tiên cùng opts
         setMedia(<YouTube videoId={properMedia[0].key} opts={opts} />);
@@ -57,7 +60,7 @@ const MovieDetail = (props) => {
     };
     // Gọi send request để fetch url và xử lý data bằng getMedia function
     sendRequest(url, getMedia);
-  }, []);
+  }, [opts, sendRequest, url]);
 
   useEffect(() => {
     // Kiểm tra error state trả về từ useHttp, nếu true thì setMedia bằng backdrop img
@@ -66,13 +69,13 @@ const MovieDetail = (props) => {
         <div>
           <img
             className="object-fit-cover w-100"
+            alt="img"
             src={`${props.imgSrc}${props.backdrop_path}`}
           ></img>
-
         </div>
       );
     }
-  }, [error]);
+  }, [error, props.imgSrc, props.backdrop_path]);
   // Hiển thị các data đã được xử lý, category NetFlixOriginal có các properties khác các phần còn lại các categories nên cần kiểm tra sự tồn tại của các key trước
   return (
     <div className={classes['detail-container']}>

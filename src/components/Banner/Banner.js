@@ -11,14 +11,14 @@ const Banner = () => {
   const [banner, setBanner] = useState(null);
   // setBanner ngẫu nhiên trong 20 kết quả, lấy các data name, backdrop_path, overview cho Banner
   const [{ fetchNetflixOriginals: url }, imgSrc] = useContext(RequestCtx);
-  const { isLoading, error, sendRequest } = useHttp();
+  const { sendRequest } = useHttp();
   useEffect(() => {
     sendRequest(url, (data) => {
       setBanner(
         data.results[Math.round(Math.random() * (data.results.length - 1))]
       );
     });
-  }, []);
+  }, [sendRequest, url]);
 
   return (
     <>
@@ -27,6 +27,7 @@ const Banner = () => {
             <>
               <img
                 src={`${imgSrc}${banner.backdrop_path || banner.poster_path}`}
+                alt='banner'
                 className="w-100 h-100 object-fit-cover card-img rounded-0 border-0"
               ></img>
               <div className={classes['top-layer']}></div>

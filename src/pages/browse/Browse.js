@@ -1,4 +1,4 @@
-import { useState, useCallback, Fragment } from 'react';
+import { useState, Fragment } from 'react';
 
 import Banner from '../../components/Banner/Banner';
 import MovieList from '../../components/MovieList/MovieList';
